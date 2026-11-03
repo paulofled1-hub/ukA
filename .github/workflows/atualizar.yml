@@ -1,0 +1,23 @@
+name: Atualizar resultados
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 10-20 * * *'
+permissions:
+  contents: write
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright && playwright install --with-deps chromium
+      - run: python coletar.py
+      - run: |
+          git config user.name bot
+          git config user.email bot@users.noreply.github.com
+          git add pagina.txt
+          git commit -m pagina || echo nada
+          git push
